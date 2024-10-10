@@ -1,5 +1,5 @@
 'use client';
-import axios, { AxiosError } from 'axios';
+import axios  from 'axios';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
