@@ -5,19 +5,29 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
+interface User {
+    email: string;
+    username: string;
+    phone: string;
+}
+
 export default function ProfilePage() {
     const router = useRouter();
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState<User | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const getUserDetails = async () => {
+        setLoading(true);
         try {
             const res = await axios.post('/api/users/me');
             const data = res.data.data;
             setUserData(data);
             toast.success('User details fetched successfully');
         } catch (error: any) {
-            console.log(error.message);
-            toast.error('Failed to fetch user details');
+            console.error(error.message);
+            toast.error('Failed to fetch user details. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -27,8 +37,8 @@ export default function ProfilePage() {
             toast.success('Logout successful');
             router.push('/login');
         } catch (error: any) {
-            console.log(error.message);
-            toast.error(error.message);
+            console.error(error.message);
+            toast.error('Failed to logout. Please try again.');
         }
     };
 
@@ -56,13 +66,17 @@ export default function ProfilePage() {
                     Logout
                 </button>
 
-                {!userData && (
+                {!userData && !loading && (
                     <button
                         onClick={getUserDetails}
                         className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 mt-4"
                     >
                         Get User Details
                     </button>
+                )}
+
+                {loading && (
+                    <p className="text-lg text-gray-600 mt-4">Loading user details...</p>
                 )}
             </div>
         </div>

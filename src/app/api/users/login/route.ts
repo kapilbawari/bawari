@@ -8,7 +8,7 @@ connectToMongoDB();
 
 export async function POST(request: NextRequest) {
     try {
-        const requestBody = await request.json();
+        const requestBody: { email: string; password: string } = await request.json();
         const { email, password } = requestBody;
 
         console.log("Login attempt:", requestBody);
@@ -38,16 +38,13 @@ export async function POST(request: NextRequest) {
 
         const token = jwt.sign(tokenData, secretKey, { expiresIn: '1d' }); // Set an expiration time for the token
 
-      const Responnse =   NextResponse.json({ message: "Login successful", 
-            success:true
-         });
-         Responnse.cookies.set("token" ,token,{
-            httpOnly :true
-         })
-         return Responnse
-         
+        const response = NextResponse.json({ message: "Login successful", success: true });
+        response.cookies.set("token", token, {
+            httpOnly: true
+        });
+        return response;
 
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error during login:", error);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }

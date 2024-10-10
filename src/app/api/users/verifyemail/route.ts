@@ -34,9 +34,10 @@ export async function POST(request: NextRequest) {
                 message: "Email verified successfully",
                 success: true,
             },
-            { status: 200 } // Corrected status code
+            { status: 200 }
         );
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        console.error("Error during email verification:", error);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

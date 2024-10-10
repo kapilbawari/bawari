@@ -21,10 +21,10 @@ export async function POST(request: NextRequest) {
 
         // Return user details in case of success
         return NextResponse.json({ message: "User fetched successfully", data: user }, { status: 200 });
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error fetching user:", error);
 
         // Return error response in case of failure
-        return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 });
+        return NextResponse.json({ message: "Internal Server Error", error: (error as Error).message }, { status: 500 });
     }
 }

@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/userModal';
 import bcryptjs from 'bcryptjs';
 import { connectToMongoDB } from '@/dbConfig/dbConfig';
-import {sendEmail} from '@/helper/nodemailer'
+import { sendEmail } from '@/helper/nodemailer';
 
 connectToMongoDB();
 
 export async function POST(request: NextRequest) {
     try {
         const requestBody = await request.json();
-        const { username,phone, email, password } = requestBody;
+        const { username, phone, email, password } = requestBody;
         console.log(requestBody);
 
         const user = await User.findOne({ email });
@@ -27,20 +27,21 @@ export async function POST(request: NextRequest) {
             password: hashedPassword,
         });
 
-        const saveuser = await newUser.save();
+        const savedUser = await newUser.save();
 
         // Console log the created user
-        console.log("User created:", saveuser);
+        console.log("User created:", savedUser);
         
-        await sendEmail({email,emailType:"VERIFY",UserId:saveuser._id})
+        await sendEmail({ email, emailType: "VERIFY", UserId: savedUser._id });
 
         return NextResponse.json({
-             message: "User created successfully",
-             success:true,
-             saveuser });
+            message: "User created successfully",
+            success: true,
+            savedUser
+        });
 
-    } catch (error: any) {
-       
+    } catch (error: unknown) {
+        console.error("Error during user creation:", error);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

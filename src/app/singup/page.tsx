@@ -4,13 +4,21 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+
+interface User {
+    email: string;
+    phone: string;
+    password: string;
+    username: string;
+}
 
 export default function SignupPage() {
     const router = useRouter();
 
-    const [user, setUser] = useState({
+    const [user, setUser] = useState<User>({
         email: '',
-        phone:'',
+        phone: '',
         password: '',
         username: '',
     });
@@ -23,20 +31,19 @@ export default function SignupPage() {
             setLoading(true);
             const response = await axios.post('/api/users/singup', user);
             console.log('Signup success', response.data);
+            toast.success('Signup successful! Redirecting to login...');
             router.push('/login');
+            setUser({ email: '', phone: '', password: '', username: '' }); // Reset form
         } catch (error: any) {
             console.log('Signup failed', error.message);
+            toast.error('Signup failed. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        if (user.email.length > 0 && user.password.length > 0 && user.username.length > 0) {
-            setButtonDisable(false);
-        } else {
-            setButtonDisable(true);
-        }
+        setButtonDisable(!(user.email && user.password && user.username));
     }, [user]);
 
     return (
@@ -62,7 +69,8 @@ export default function SignupPage() {
                 type="email"
                 style={styles.input}
             />
-                <label htmlFor="phone" style={styles.label}>Phone</label>
+            
+            <label htmlFor="phone" style={styles.label}>Phone</label>
             <input
                 id="phone"
                 value={user.phone}
@@ -71,7 +79,6 @@ export default function SignupPage() {
                 type="text"
                 style={styles.input}
             />
-
 
             <label htmlFor="password" style={styles.label}>Password</label>
             <input
@@ -91,7 +98,7 @@ export default function SignupPage() {
                 {loading ? 'Signing Up...' : buttonDisable ? 'Fill all fields' : 'Signup'}
             </button>
 
-            <Link  href="/login">
+            <Link href="/login" style={styles.link}>
                 Visit login page
             </Link>
         </div>
@@ -130,9 +137,6 @@ const styles = {
         outline: 'none',
         boxSizing: 'border-box',
         transition: 'border-color 0.2s',
-    },
-    inputFocus: {
-        borderColor: '#007bff',
     },
     button: {
         width: '100%',

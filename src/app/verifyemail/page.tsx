@@ -6,12 +6,14 @@ import Link from 'next/link';
 
 export default function VerifyEmailPage() {
     const router = useRouter();
-    const [token, setToken] = useState("");
-    const [verified, setVerified] = useState(false);
-    const [error, setError] = useState(false);
+    const [token, setToken] = useState<string>("");
+    const [verified, setVerified] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     // Function to verify user email
     const verifyUserEmail = async () => {
+        setLoading(true);
         try {
             await axios.post("/api/users/verifyemail", { token });
             setVerified(true);  // Success state
@@ -19,6 +21,8 @@ export default function VerifyEmailPage() {
         } catch (error: any) {
             setError(true);  // Error state
             console.log("Verification error:", error.response?.data);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -32,7 +36,7 @@ export default function VerifyEmailPage() {
 
     // Trigger verification when token is available
     useEffect(() => {
-        if (token.length > 0) {
+        if (token) {
             verifyUserEmail();
         }
     }, [token]);
@@ -53,7 +57,13 @@ export default function VerifyEmailPage() {
                     </h2>
                 </div>
 
-                {/* Verification Success Message */}
+                {/* Verification Messages */}
+                {loading && (
+                    <div className="bg-blue-100 text-blue-700 p-4 rounded-lg mb-4">
+                        <h2 className="text-lg font-semibold">Verifying your email...</h2>
+                    </div>
+                )}
+                
                 {verified && (
                     <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-4">
                         <h2 className="text-lg font-semibold">Email Verified Successfully!</h2>
@@ -65,7 +75,6 @@ export default function VerifyEmailPage() {
                     </div>
                 )}
 
-                {/* Error Message */}
                 {error && (
                     <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4">
                         <h2 className="text-lg font-semibold">Verification Failed</h2>

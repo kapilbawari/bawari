@@ -1,8 +1,9 @@
-import User from '@/models/userModal'; // Adjust the path as necessary
+import { NextApiRequest, NextApiResponse } from 'next';
+import User from '@/models/userModal';
 import { connectToMongoDB } from '@/dbConfig/dbConfig';
-import nodemailer from 'nodemailer'; // Assuming you use nodemailer for sending emails
+import nodemailer from 'nodemailer';
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
     }
@@ -17,23 +18,31 @@ export default async function handler(req, res) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Here you would generate a reset token and send the email
-        // For example:
-        const resetToken = 'some-generated-token'; // Implement token generation logic
+        // Token generation logic (implement as needed)
+        const resetToken = 'some-generated-token'; // Replace with actual token generation logic
 
-        // Send the email
+        // Nodemailer transporter configuration
         const transporter = nodemailer.createTransport({
-            // SMTP configuration
+            host: 'your-smtp-host', // e.g., smtp.gmail.com
+            port: 587, // SMTP port
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: process.env.SMTP_USER, // SMTP username
+                pass: process.env.SMTP_PASS, // SMTP password
+            },
         });
 
+        // Send the email
         await transporter.sendMail({
-            to: email,
-            subject: 'Password Reset',
-            text: `To reset your password, click the link: <link>?token=${resetToken}`,
+            from: '"Your App Name" <your-email@example.com>', // sender address
+            to: email, // list of receivers
+            subject: 'Password Reset', // Subject line
+            text: `To reset your password, click the link: <link>?token=${resetToken}`, // plain text body
+            html: `<p>To reset your password, click the link: <a href="<link>?token=${resetToken}">Reset Password</a></p>`, // HTML body
         });
 
         res.status(200).json({ message: 'Reset link sent to your email' });
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
     }
