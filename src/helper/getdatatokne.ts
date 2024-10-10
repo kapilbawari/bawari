@@ -21,8 +21,12 @@ export const getdataformToken = (request: NextRequest): string => {
 
         // Return the user ID from the decoded token
         return decodedToken.id;
-    } catch (error: any) {
-        // Return a meaningful error message if something goes wrong
-        throw new Error("Invalid or expired token: " + error.message);
+    } catch (error) {
+        // Check if error is an instance of Error to avoid using `any`
+        if (error instanceof Error) {
+            throw new Error("Invalid or expired token: " + error.message);
+        }
+        // Fallback for unexpected errors
+        throw new Error("Invalid or expired token: Unknown error");
     }
 };

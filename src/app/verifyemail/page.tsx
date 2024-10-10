@@ -1,30 +1,32 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState, useCallback } from 'react';
+import axios, { AxiosError } from 'axios';
 import Link from 'next/link';
 
 export default function VerifyEmailPage() {
-    const router = useRouter();
     const [token, setToken] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
     // Function to verify user email
-    const verifyUserEmail = async () => {
+    const verifyUserEmail = useCallback(async () => {
         setLoading(true);
         try {
             await axios.post("/api/users/verifyemail", { token });
             setVerified(true);  // Success state
             setError(false);
-        } catch (error: any) {
+        } catch (error: unknown) {
             setError(true);  // Error state
-            console.log("Verification error:", error.response?.data);
+            if (axios.isAxiosError(error)) {
+                console.log("Verification error:", error.response?.data);
+            } else {
+                console.log("Unexpected error:", error);
+            }
         } finally {
             setLoading(false);
         }
-    };
+    }, [token]);
 
     // Fetch token from URL
     useEffect(() => {
@@ -39,7 +41,7 @@ export default function VerifyEmailPage() {
         if (token) {
             verifyUserEmail();
         }
-    }, [token]);
+    }, [token, verifyUserEmail]); // Added verifyUserEmail to dependencies
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">

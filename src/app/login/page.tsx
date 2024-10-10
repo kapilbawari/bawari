@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -24,8 +24,12 @@ export default function LoginPage() {
             const response = await axios.post('/api/users/login', user);
             console.log('Login success', response.data);
             router.push('/profile');
-        } catch (error: any) {
-            console.log('Login failed', error.message);
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                console.error('Login failed', error.message);
+            } else {
+                console.error('An unexpected error occurred:', error);
+            }
             setErrorMessage('Invalid email or password. Please try again.'); // Set user feedback
         } finally {
             setLoading(false);
@@ -66,7 +70,7 @@ export default function LoginPage() {
                 >
                     {loading ? 'Logging In...' : buttonDisable ? 'Fill all fields' : 'Login'}
                 </button>
-                <Link href="/singup" className="block mt-4 text-center text-blue-500 hover:underline">
+                <Link href="/signup" className="block mt-4 text-center text-blue-500 hover:underline">
                     Don't have an account? Sign Up
                 </Link>
                 <Link href="/forgot-password" className="block mt-2 text-center text-blue-500 hover:underline">

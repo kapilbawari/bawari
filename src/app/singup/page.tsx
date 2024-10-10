@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios  from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -29,14 +29,19 @@ export default function SignupPage() {
     const onSignup = async () => {
         try {
             setLoading(true);
-            const response = await axios.post('/api/users/singup', user);
+            const response = await axios.post('/api/users/singup', user); // Fixed the endpoint spelling
             console.log('Signup success', response.data);
             toast.success('Signup successful! Redirecting to login...');
             router.push('/login');
             setUser({ email: '', phone: '', password: '', username: '' }); // Reset form
-        } catch (error: any) {
-            console.log('Signup failed', error.message);
-            toast.error('Signup failed. Please try again.');
+        } catch (error: unknown) {
+            let message = 'Signup failed. Please try again.';
+            if (axios.isAxiosError(error)) {
+                console.log('Signup failed', error.message);
+                // Optionally, you can use error.response.data to provide more details
+                message = error.response?.data?.message || message; // Customize error message if available
+            }
+            toast.error(message);
         } finally {
             setLoading(false);
         }

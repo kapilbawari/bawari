@@ -1,7 +1,6 @@
 'use client';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import React, { useState } from 'react';
-import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
@@ -23,9 +22,14 @@ export default function ProfilePage() {
             const data = res.data.data;
             setUserData(data);
             toast.success('User details fetched successfully');
-        } catch (error: any) {
-            console.error(error.message);
-            toast.error('Failed to fetch user details. Please try again.');
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                console.error(error.message);
+                toast.error('Failed to fetch user details. Please try again.');
+            } else {
+                console.error('An unexpected error occurred:', error);
+                toast.error('Failed to fetch user details. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -36,9 +40,14 @@ export default function ProfilePage() {
             await axios.get('/api/users/logout');
             toast.success('Logout successful');
             router.push('/login');
-        } catch (error: any) {
-            console.error(error.message);
-            toast.error('Failed to logout. Please try again.');
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                console.error(error.message);
+                toast.error('Failed to logout. Please try again.');
+            } else {
+                console.error('An unexpected error occurred:', error);
+                toast.error('Failed to logout. Please try again.');
+            }
         }
     };
 

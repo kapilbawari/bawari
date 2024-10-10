@@ -68,8 +68,12 @@ export const sendEmail = async ({ email, emailType, UserId }: EmailParams) => {
 
         return mailSent;
 
-    } catch (error: any) {
-        console.error("Error sending email:", error.message);
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error("Error sending email:", error.message);
+        } else {
+            console.error("Unexpected error sending email:", error);
+        }
         throw new Error("Failed to send email. Please try again later.");
     }
 };
