@@ -1,0 +1,33 @@
+{
+  "projects": {
+    "nextjsblog": "blog-f3d7a"
+  },
+  "targets": {},
+  "etags": {},
+  "hosting": {
+    "public": "out",
+    "rewrites": [
+      {
+        "source": "/login",
+        "destination": "/login.html"
+      },
+      {
+        "source": "/signup",
+        "destination": "/signup.html"
+      },
+      {
+        "source": "/profile",
+        "destination": "/profile.html"
+      },
+      {
+        "source": "/**",
+        "destination": "/index.html"
+      }
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
