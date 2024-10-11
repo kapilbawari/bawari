@@ -42,8 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
         res.status(200).json({ message: 'Reset link sent to your email' });
-    } catch (error: unknown) {
-        console.error(error);
+    } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }

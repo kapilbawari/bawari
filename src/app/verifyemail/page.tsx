@@ -1,7 +1,7 @@
-'use client';
-import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
+"use client";
+import React, { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+import Link from "next/link";
 
 export default function VerifyEmailPage() {
     const [token, setToken] = useState<string>("");
@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
 
     // Fetch token from URL
     useEffect(() => {
-        const queryToken = new URLSearchParams(window.location.search).get('token');
+        const queryToken = new URLSearchParams(window.location.search).get("token");
         if (queryToken) {
             setToken(queryToken);
         }
@@ -49,7 +49,7 @@ export default function VerifyEmailPage() {
                 <h1 className="text-2xl font-bold mb-4 text-center">Verify Email</h1>
 
                 {/* Token Box */}
-                <div className={`p-4 border ${token ? 'border-green-500' : 'border-red-500'} rounded-lg mb-6`}>
+                <div className={`p-4 border ${token ? "border-green-500" : "border-red-500"} rounded-lg mb-6`}>
                     <h2 className="text-lg text-gray-700 truncate">
                         {token ? (
                             <span className="block w-full overflow-hidden text-ellipsis whitespace-nowrap">

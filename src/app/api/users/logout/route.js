@@ -18,8 +18,8 @@ export async function GET() {
         });
 
         return response;
-    } catch (error: any) {
-        console.error("Error during logout:", error);
+    } catch (error) {
+     console.log(error)
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }

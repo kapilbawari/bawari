@@ -1,8 +1,8 @@
 'use client';
-import axios  from 'axios';
-import React, { useState } from 'react';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import axios from "axios";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface User {
     email: string;
@@ -18,17 +18,17 @@ export default function ProfilePage() {
     const getUserDetails = async () => {
         setLoading(true);
         try {
-            const res = await axios.post('/api/users/me');
+            const res = await axios.post("/api/users/me");
             const data = res.data.data;
             setUserData(data);
-            toast.success('User details fetched successfully');
+            toast.success("User details fetched successfully");
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
                 console.error(error.message);
-                toast.error('Failed to fetch user details. Please try again.');
+                toast.error("Failed to fetch user details. Please try again.");
             } else {
-                console.error('An unexpected error occurred:', error);
-                toast.error('Failed to fetch user details. Please try again.');
+                console.error("An unexpected error occurred:", error);
+                toast.error("Failed to fetch user details. Please try again.");
             }
         } finally {
             setLoading(false);
@@ -37,16 +37,16 @@ export default function ProfilePage() {
 
     const logout = async () => {
         try {
-            await axios.get('/api/users/logout');
-            toast.success('Logout successful');
-            router.push('/login');
+            await axios.get("/api/users/logout");
+            toast.success("Logout successful");
+            router.push("/login");
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
                 console.error(error.message);
-                toast.error('Failed to logout. Please try again.');
+                toast.error("Failed to logout. Please try again.");
             } else {
-                console.error('An unexpected error occurred:', error);
-                toast.error('Failed to logout. Please try again.');
+                console.error("An unexpected error occurred:", error);
+                toast.error("Failed to logout. Please try again.");
             }
         }
     };

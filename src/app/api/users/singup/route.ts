@@ -40,8 +40,8 @@ export async function POST(request: NextRequest) {
             savedUser
         });
 
-    } catch (error: unknown) {
-        console.error("Error during user creation:", error);
+    } catch (error) {
+        console.log("Error during user creation:", error);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
